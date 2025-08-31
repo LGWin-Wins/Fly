@@ -1,159 +1,57 @@
--- Instances: 5 | Scripts: 2 | Modules: 0 | Tags: 0
-local G2L = {};
+-- Generated using RoadToGlory's Converter v1.1 (RoadToGlory#9879)
 
--- StarterGui.ScreenGui
-G2L["1"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"));
-G2L["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
+-- Instances:
+
+local Converted = {
+	["_ScreenGui"] = Instance.new("ScreenGui");
+	["_LocalScript"] = Instance.new("LocalScript");
+	["_TextButton"] = Instance.new("TextButton");
+	["_LocalScript1"] = Instance.new("LocalScript");
+	["_UICorner"] = Instance.new("UICorner");
+}
+
+-- Properties:
+
+Converted["_ScreenGui"].ResetOnSpawn = false
+Converted["_ScreenGui"].ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+Converted["_ScreenGui"].Parent = game:GetService("CoreGui")
+
+Converted["_TextButton"].Font = Enum.Font.Unknown
+Converted["_TextButton"].RichText = true
+Converted["_TextButton"].Text = "FLY"
+Converted["_TextButton"].TextColor3 = Color3.fromRGB(0, 0, 0)
+Converted["_TextButton"].TextScaled = true
+Converted["_TextButton"].TextSize = 14
+Converted["_TextButton"].TextWrapped = true
+Converted["_TextButton"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Converted["_TextButton"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+Converted["_TextButton"].BorderSizePixel = 0
+Converted["_TextButton"].Position = UDim2.new(0.753184676, 0, 0.603015065, 0)
+Converted["_TextButton"].Size = UDim2.new(0, 65, 0, 78)
+Converted["_TextButton"].Parent = Converted["_ScreenGui"]
+
+Converted["_UICorner"].Parent = Converted["_TextButton"]
+
+-- Fake Module Scripts:
+
+local fake_module_scripts = {}
 
 
--- StarterGui.ScreenGui.TextButton
-G2L["2"] = Instance.new("TextButton", G2L["1"]);
-G2L["2"]["TextWrapped"] = true;
-G2L["2"]["BorderSizePixel"] = 0;
-G2L["2"]["TextSize"] = 14;
-G2L["2"]["TextScaled"] = true;
-G2L["2"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
-G2L["2"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-G2L["2"]["FontFace"] = Font.new([[rbxasset://fonts/families/LuckiestGuy.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
-G2L["2"]["Size"] = UDim2.new(0, 65, 0, 78);
-G2L["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-G2L["2"]["Text"] = [[FLY]];
-G2L["2"]["Position"] = UDim2.new(0.75318, 0, 0.60302, 0);
+-- Fake Local Scripts:
 
+local function KWLCV_fake_script() -- Fake Script: StarterGui.ScreenGui.LocalScript
+    local script = Instance.new("LocalScript")
+    script.Name = "LocalScript"
+    script.Parent = Converted["_ScreenGui"]
+    local req = require
+    local require = function(obj)
+        local fake = fake_module_scripts[obj]
+        if fake then
+            return fake()
+        end
+        return req(obj)
+    end
 
--- StarterGui.ScreenGui.TextButton.LocalScript
-G2L["3"] = Instance.new("LocalScript", G2L["2"]);
-
-
-
--- StarterGui.ScreenGui.TextButton.UICorner
-G2L["4"] = Instance.new("UICorner", G2L["2"]);
-
-
-
--- StarterGui.ScreenGui.LocalScript
-G2L["5"] = Instance.new("LocalScript", G2L["1"]);
-
-
-
--- StarterGui.ScreenGui.TextButton.LocalScript
-local function C_3()
-local script = G2L["3"];
-	-- LocalScript inside ScreenGui or TextButton
-	local UIS = game:GetService("UserInputService")
-	local RunService = game:GetService("RunService")
-	local Players = game:GetService("Players")
-	local player = Players.LocalPlayer
-	
-	local flyButton = script.Parent  -- The TextButton
-	local character, humanoid, root
-	local flying = false
-	local bv, bg
-	local speed = 60
-	local originals = {}
-	
-	-- Function to get character
-	local function getChar()
-		character = player.Character or player.CharacterAdded:Wait()
-		humanoid = character:WaitForChild("Humanoid")
-		root = character:WaitForChild("HumanoidRootPart")
-	end
-	getChar()
-	
-	-- Superhero pose
-	local function setSuperheroPose()
-		local rShoulder = character:FindFirstChild("Right Shoulder", true)
-		local lHip = character:FindFirstChild("Left Hip", true)
-		if rShoulder and not originals[rShoulder] then
-			originals[rShoulder] = rShoulder.C0
-			rShoulder.C0 = rShoulder.C0 * CFrame.Angles(-1.5,0,0)
-		end
-		if lHip and not originals[lHip] then
-			originals[lHip] = lHip.C0
-			lHip.C0 = lHip.C0 * CFrame.Angles(0.5,0,0)
-		end
-	end
-	
-	local function resetPose()
-		for joint, c0 in pairs(originals) do
-			if joint then joint.C0 = c0 end
-		end
-		originals = {}
-	end
-	
-	-- Start fly
-	local function startFly()
-		if flying then return end
-		flying = true
-		humanoid.PlatformStand = true
-		setSuperheroPose()
-	
-		bv = Instance.new("BodyVelocity")
-		bv.MaxForce = Vector3.new(1e5,1e5,1e5)
-		bv.Velocity = Vector3.zero
-		bv.Parent = root
-	
-		bg = Instance.new("BodyGyro")
-		bg.MaxTorque = Vector3.new(1e5,1e5,1e5)
-		bg.P = 1e5
-		bg.CFrame = root.CFrame
-		bg.Parent = root
-	
-		RunService.RenderStepped:Connect(function()
-			if not flying then return end
-			local cam = workspace.CurrentCamera
-			local cf = cam.CFrame
-			local move = Vector3.zero
-	
-			if UIS:IsKeyDown(Enum.KeyCode.W) then move += cf.LookVector end
-			if UIS:IsKeyDown(Enum.KeyCode.S) then move -= cf.LookVector end
-			if UIS:IsKeyDown(Enum.KeyCode.A) then move -= cf.RightVector end
-			if UIS:IsKeyDown(Enum.KeyCode.D) then move += cf.RightVector end
-			if UIS:IsKeyDown(Enum.KeyCode.Space) then move += Vector3.new(0,1,0) end
-			if UIS:IsKeyDown(Enum.KeyCode.LeftShift) then move += Vector3.new(0,-1,0) end
-	
-			if move.Magnitude > 0 then move = move.Unit * speed else move = Vector3.zero end
-	
-			bv.Velocity = move
-			bg.CFrame = CFrame.lookAt(root.Position, root.Position + cf.LookVector)
-		end)
-	end
-	
-	-- Stop fly
-	local function stopFly()
-		if not flying then return end
-		flying = false
-		humanoid.PlatformStand = false
-		if bv then bv:Destroy() bv = nil end
-		if bg then bg:Destroy() bg = nil end
-		resetPose()
-	end
-	
-	-- Toggle fly
-	local function toggleFly()
-		if flying then stopFly() else startFly() end
-	end
-	
-	-- Connect TextButton
-	flyButton.MouseButton1Click:Connect(toggleFly)
-	
-	-- Optional: also allow F key
-	UIS.InputBegan:Connect(function(input, gp)
-		if gp then return end
-		if input.KeyCode == Enum.KeyCode.F then toggleFly() end
-	end)
-	
-	-- Reset on respawn
-	player.CharacterAdded:Connect(function()
-		getChar()
-		stopFly()
-	end)
-	
-end;
-task.spawn(C_3);
--- StarterGui.ScreenGui.LocalScript
-local function C_5()
-local script = G2L["5"];
 	-- LocalScript in StarterPlayerScripts
 	-- Classic Admin-Style Fly with Superhero Pose
 	
@@ -267,7 +165,128 @@ local script = G2L["5"];
 		stopFly()
 	end)
 	
-end;
-task.spawn(C_5);
+end
+local function STKJZVI_fake_script() -- Fake Script: StarterGui.ScreenGui.TextButton.LocalScript
+    local script = Instance.new("LocalScript")
+    script.Name = "LocalScript"
+    script.Parent = Converted["_TextButton"]
+    local req = require
+    local require = function(obj)
+        local fake = fake_module_scripts[obj]
+        if fake then
+            return fake()
+        end
+        return req(obj)
+    end
 
-return G2L["1"], require;
+	-- LocalScript inside ScreenGui or TextButton
+	local UIS = game:GetService("UserInputService")
+	local RunService = game:GetService("RunService")
+	local Players = game:GetService("Players")
+	local player = Players.LocalPlayer
+	
+	local flyButton = script.Parent  -- The TextButton
+	local character, humanoid, root
+	local flying = false
+	local bv, bg
+	local speed = 60
+	local originals = {}
+	
+	-- Function to get character
+	local function getChar()
+		character = player.Character or player.CharacterAdded:Wait()
+		humanoid = character:WaitForChild("Humanoid")
+		root = character:WaitForChild("HumanoidRootPart")
+	end
+	getChar()
+	
+	-- Superhero pose
+	local function setSuperheroPose()
+		local rShoulder = character:FindFirstChild("Right Shoulder", true)
+		local lHip = character:FindFirstChild("Left Hip", true)
+		if rShoulder and not originals[rShoulder] then
+			originals[rShoulder] = rShoulder.C0
+			rShoulder.C0 = rShoulder.C0 * CFrame.Angles(-1.5,0,0)
+		end
+		if lHip and not originals[lHip] then
+			originals[lHip] = lHip.C0
+			lHip.C0 = lHip.C0 * CFrame.Angles(0.5,0,0)
+		end
+	end
+	
+	local function resetPose()
+		for joint, c0 in pairs(originals) do
+			if joint then joint.C0 = c0 end
+		end
+		originals = {}
+	end
+	
+	-- Start fly
+	local function startFly()
+		if flying then return end
+		flying = true
+		humanoid.PlatformStand = true
+		setSuperheroPose()
+	
+		bv = Instance.new("BodyVelocity")
+		bv.MaxForce = Vector3.new(1e5,1e5,1e5)
+		bv.Velocity = Vector3.zero
+		bv.Parent = root
+	
+		bg = Instance.new("BodyGyro")
+		bg.MaxTorque = Vector3.new(1e5,1e5,1e5)
+		bg.P = 1e5
+		bg.CFrame = root.CFrame
+		bg.Parent = root
+	
+		RunService.RenderStepped:Connect(function()
+			if not flying then return end
+			local cam = workspace.CurrentCamera
+			local cf = cam.CFrame
+			local move = Vector3.zero
+	
+			if UIS:IsKeyDown(Enum.KeyCode.W) then move += cf.LookVector end
+			if UIS:IsKeyDown(Enum.KeyCode.S) then move -= cf.LookVector end
+			if UIS:IsKeyDown(Enum.KeyCode.A) then move -= cf.RightVector end
+			if UIS:IsKeyDown(Enum.KeyCode.D) then move += cf.RightVector end
+			if UIS:IsKeyDown(Enum.KeyCode.Space) then move += Vector3.new(0,1,0) end
+			if UIS:IsKeyDown(Enum.KeyCode.LeftShift) then move += Vector3.new(0,-1,0) end
+	
+			if move.Magnitude > 0 then move = move.Unit * speed else move = Vector3.zero end
+	
+			bv.Velocity = move
+			bg.CFrame = CFrame.lookAt(root.Position, root.Position + cf.LookVector)
+		end)
+	end
+	
+	-- Stop fly
+	local function stopFly()
+		if not flying then return end
+		flying = false
+		humanoid.PlatformStand = false
+		if bv then bv:Destroy() bv = nil end
+		if bg then bg:Destroy() bg = nil end
+		resetPose()
+	end
+	
+	-- Toggle fly
+	local function toggleFly()
+		if flying then stopFly() else startFly() end
+	end
+	
+	-- Connect TextButton
+	flyButton.MouseButton1Click:Connect(toggleFly)
+	
+	-- Optional: also allow F key
+	UIS.InputBegan:Connect(function(input, gp)
+		if gp then return end
+		if input.KeyCode == Enum.KeyCode.F then toggleFly() end
+	end)
+	
+	-- Reset on respawn
+	player.CharacterAdded:Connect(function()
+		getChar()
+		stopFly()
+	end)
+	
+end
